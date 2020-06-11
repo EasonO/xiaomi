@@ -8,6 +8,25 @@
 
 <script>
 export default {
-  
+  name: 'app',
+  components: {
+    
+  },
+  data(){
+    return {
+      
+    }
+  },
+  mounted(){
+    
+  },
+  methods:{
+    
+  }
+    
 }
 </script>
+
+<style lang="scss">
+
+</style>
