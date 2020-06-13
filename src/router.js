@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import Home from './pages/home'
 import Index from './pages/index'
 import Product from './pages/product'
+import Test from './pages/detail'
+// import Product from './pages/detail'
 import Detail from './pages/detail'
 import Cart from './pages/cart'
 import Order from './pages/order'
@@ -28,15 +30,25 @@ export default new Router({
           name: 'index',
           component: Index,
         },
-        {
-          path: '/product/:id ',
-          name: 'product',
-          component: Product,
-        },
+        // {
+        //   path: '/product/:id ',
+        //   name: 'detail',
+        //   component: Detail,
+        // },
+        // {
+        //   path: '/test/:id ',
+        //   name: 'detail',
+        //   component: Detail,
+        // },
         {
           path: '/detail/:id',
           name: 'detail',
           component: Detail,
+        },
+        {
+          path: '/product/:id ',
+          name: 'product',
+          component: Product,
         }
       ]
     },

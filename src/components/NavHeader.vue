@@ -244,6 +244,7 @@ export default {
           }
           .children {
             position: absolute;
+            background-color: #fff;
             top: 112px;
             left: 0;
             width: 1226px;
