@@ -30,23 +30,13 @@ export default new Router({
           name: 'index',
           component: Index,
         },
-        // {
-        //   path: '/product/:id ',
-        //   name: 'detail',
-        //   component: Detail,
-        // },
-        // {
-        //   path: '/test/:id ',
-        //   name: 'detail',
-        //   component: Detail,
-        // },
         {
           path: '/detail/:id',
           name: 'detail',
           component: Detail,
         },
         {
-          path: '/product/:id ',
+          path: '/product/:id',
           name: 'product',
           component: Product,
         }

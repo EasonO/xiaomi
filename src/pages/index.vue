@@ -65,30 +65,68 @@
         
             <!-- 广告区域开始 -->
             <div class="ads-box">
+                <div  v-for="(item,index) in adsList" :key="index">
+                    <a :href="'/product/'+item.id">
+                        <img :src="item.img">
+                    </a> 
+                </div>
             </div>
             <!-- 广告区域结束 -->
 
             <!-- banner图开始 -->
             <div class="banner">
+                <img src="../../public/imgs/banner-1.png" alt="">
             </div>
             <!-- banner图结束 -->
-
+        </div>
             <!-- 产品区域开始 -->
             <div class="product-box">
+                <div class="container">
+                   <h3>手机</h3>
+                    <div class="wrapper">
+                        <!-- 左边banner图 -->
+                        <div class="phone-ads">
+                            <a href="/product/12">
+                                <img src="/imgs/mix-alpha.jpg">      
+                            </a>   
+                        </div>
+                        <!-- 右边产品列表 -->
+                        <div class="phone-list">
+                            <div class="list" v-for="(arr,i) in phoneList" :key="i">
+                                <div class="item" v-for="(item,j) in arr" :key="j">
+                                    <span :class="{'new-pro':j%2==0}">新品</span>
+                                    <div class="item-img">
+                                        <img :src="item.mainImage">
+                                    </div>
+                                    <div class="item-info">
+                                        <h4>{{item.name}}</h4>
+                                        <p>{{item.subtitle}}</p>
+                                        <p class="price" @click="addCart(item.id)">{{item.price | currency}}</p>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+                
             </div>
-            <!-- 产品区域结束 -->
-
-            </div>
-        
+            <!-- 产品区域结束 -->   
         <service-bar></service-bar>
-    </div>
+        <modal title="提示" sureText="查看购物车" btnType="1" modalType="middle" :showModal="showModal" @submit="goToCart" @cancel="showModal=false">
+            <template v-slot:body>
+                <p>商品添加成功!</p>
+            </template>
+        </modal>
+    </div>   
 </template>
 
 <script>
 import ServiceBar from "./../components/ServiceBar"
+import Modal from "./../components/Modal"
 // 引入轮播组件（swiper组件），swiper组件很大，需要解构出来然后再引入
 import { Swiper, SwiperSlide, directive } from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
+
 
 export default {
     name:'index',
@@ -96,7 +134,8 @@ export default {
     components:{
         ServiceBar,
         Swiper,
-        SwiperSlide
+        SwiperSlide,
+        Modal
     },
     data() {
         return {
@@ -129,10 +168,11 @@ export default {
                 },
             // Some Swiper option/callback...
             },
-            // 由于后台没有轮播图数据，手动设置轮播图数据，并放到slideList数组中
+            // 轮播图数据
             slideList:[
                 {
                     id:'42',
+                    // 为什么图片路径可以这样写
                     img:'/imgs/slider/slide-1.jpg'
                 },
                 {
@@ -152,6 +192,7 @@ export default {
                     img:'/imgs/slider/slide-5.jpg'
                 }
             ],
+            // 轮播菜单数据
             menuList:[
                 [
                     {
@@ -174,24 +215,80 @@ export default {
                 ],
                 [0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]
             ],
+            // 广告位数据
+            adsList:[
+                {
+                    id:33,
+                    img:'/imgs/ads/ads-1.png'
+                },
+                {
+                    id:34,
+                    img:'/imgs/ads/ads-2.jpg'
+                },
+                {
+                    id:35,
+                    img:'/imgs/ads/ads-3.png'
+                },
+                {
+                    id:36,
+                    img:'/imgs/ads/ads-4.jpg'
+                }
+            ],
+            phoneList:[],
+            showModal:false
         }
     },
     // 生命周期钩子函数
     mounted() {
-      console.log(this.$route)
-    }
+      this.init();
+    },
+    methods:{
+        init(){
+            // 为什么这里的路径可以直接写 /product?
+            this.axios.get('/products',{
+                params:{
+                    categoryId:100012,
+                    pageSize:14
+                }
+            }).then((res)=>{
+                res.list = res.list.slice(6,14);
+                this.phoneList = [res.list.slice(0,4),res.list.slice(4,8)]
+            })
+        },
+        // 为购物车图标点击事件
+        addCart(id){
+            this.showModal = true;
+            // this.axios.post('/carts',{
+            //     productId:id,
+            //     selected:true
+            // }).then(()=>{
+
+            // }).catch(()=>{
+            //     this.showModal = true;
+            // })
+        },
+        // 为购物车图标的弹窗添加点击事件
+        goToCart(){
+            this.$router.push('/cart')
+        }
+
+    },
+    filters:{
+      currency(val){
+          if(!val) return '0.00';
+          return '￥' + val.toFixed(2) + '元';
+      }
+    }  
 }
 </script>
 
 <style lang="scss">
 @import "./../assets/scss/config.scss";
 @import "./../assets/scss/mixin.scss";
-    .test{
-        z-index: 9999;
-    }
-    .index{
-        .swiper-box{
 
+    .index{
+        // 轮播区域样式
+        .swiper-box{
             // 轮播菜单样式
             .nav-menu{
                 position: absolute;
@@ -204,7 +301,6 @@ export default {
                 .test-content{
                     background-color: #fff;
                 }
-
                 .menu-wrap{
                     .menu-item{
                         height: 50px;
@@ -272,6 +368,117 @@ export default {
                 img{
                     width: 100%;
                     height: 100%;
+                }
+            }
+        }
+        // 广告位样式
+        .ads-box{
+            display: flex;
+            justify-content: space-between;
+            div{
+                width: 25%;
+                box-sizing: border-box;
+                margin:20px 15px 0px 0px;
+                &:last-child{
+                    margin-right: 0;
+                }
+                img{
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+        // 广告位样式
+        .banner{
+            img{
+                width: 100%;
+                margin: 20px 0 20px 0;
+            }
+        }
+        // 产品区样式
+        .product-box{
+            background-color: $colorJ;
+            padding: 30px 0 50px;
+            // 产品区标题样式
+            h3{
+                font-size: $fontF;
+                height: 21px;
+                line-height: 21px;
+                color: $colorB;
+                margin-bottom: 10px;
+            }
+            // 产品区列表样式
+            .wrapper{
+                display: flex;
+                // 左边广告图
+                .phone-ads{
+                    margin-right: 16px;
+                    img{
+                        width: 224px;
+                        height: 619px;
+                    }
+                }
+                // 右边手机列表
+                .phone-list{
+                    .list{
+                        @include flex();
+                        width: 986px;
+                        margin-bottom: 14px;
+                        &:last-child{
+                            margin-bottom: 0;
+                        }
+                        .item{
+                            width:236px;
+                            height:302px;
+                            background-color:$colorG;
+                            text-align:center;
+                            span{
+                                display:inline-block;
+                                width:67px;
+                                height:24px;
+                                font-size: 14px;
+                                line-height: 24px;
+                                color: $colorG;
+                                &.new-pro{
+                                    background-color: #7ecf68;
+                                }
+                                &.kill-pro{
+                                    background-color: #e82626;
+                                }             
+                            }
+                            .item-img{
+                                img{
+                                    height:195px;
+                                    width: 100%;
+                                }
+                            }
+                            .item-info{
+                                h4{
+                                    font-size:$fontJ;
+                                    color:$colorB;
+                                    line-height:$fontJ;
+                                    font-weight:bold;
+                                }
+                                p{
+                                    color:$colorD;
+                                    line-height:13px;
+                                    margin:6px auto 13px;
+                                }
+                                .price{
+                                    color:#F20A0A;
+                                    font-size:$fontJ;
+                                    font-weight:bold;
+                                    cursor:pointer;
+                                    &:after{
+                                        @include bgImg(22px,22px,'/imgs/icon-cart-hover.png');
+                                        content:' ';
+                                        margin-left:5px;
+                                        vertical-align: middle;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
