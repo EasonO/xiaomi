@@ -4,7 +4,8 @@ import store from './store'
 import axios from 'axios'
 // 引入vue-axios模块为了方便发送axios请求
 import VueAxios from 'vue-axios'
-
+// 引入图片懒加载组件
+import VueLazyLoad from 'vue-lazyload'
 import App from './App.vue'
 // import env from './env'
 
@@ -32,6 +33,9 @@ axios.interceptors.response.use(function(response){
 // 请求拦截?
 
 Vue.use(VueAxios,axios);
+Vue.use(VueLazyLoad,{
+  loading:'/imgs/loading-svg/loading-bars.svg'
+})
 Vue.config.productionTip = false
 
 new Vue({
