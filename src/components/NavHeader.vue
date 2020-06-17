@@ -13,7 +13,7 @@
           <a href="javascript:;" v-if="!username" @click="login">登录</a>
           <a href="javascript:;" v-if="username">我的订单</a>
           <a href="javascript:;" class="my-cart" @click="gotoCart">
-            <span class="icon-cart"></span>购物车
+            <span class="icon-cart"></span>购物车({{cartCount}})
           </a>
         </div>
       </div>
@@ -31,7 +31,7 @@
                 <li class="product" v-for="(item,index) in phoneList" :key="index">
                   <a v-bind:href="'/product/'+item.id" target="_blank">
                     <div class="pro-img">
-                      <img v-lazy="item.mainImage" :alt="item.subtitle"/>
+                      <img v-lazy="item.mainImage" :alt="item.subtitle" />
                     </div>
                     <div class="pro-name">{{item.name}}</div>
                     <div class="pro-price">{{item.price | currency}}</div>
@@ -121,23 +121,31 @@ export default {
   name: "nav-header",
   data() {
     return {
-      username: "feng",
-      // 首页顶部商品信息列表
-      phoneList: []
+      // 首页顶部商品信息列
+      phoneList: [],
+      // username:this.$store.state.username
+    };
+  },
+  computed: {
+    username() {
+      return this.$store.state.username;
+    },
+    cartCount() {
+      return this.$store.state.cartCount;
     }
   },
-  filters:{
-      currency(val){
-          if(!val) return '0.00';
-          return '￥' + val.toFixed(2) + '元';
-      }
+  filters: {
+    currency(val) {
+      // if(!val) return '0.00';
+      return '￥' + val.toFixed(2) + '元';
+    }
   },
   mounted() {
     this.getProductList();
   },
   methods: {
-    login(){
-        this.$router.push('/login');
+    login() {
+      this.$router.push("/login");
     },
     getProductList() {
       this.axios
@@ -149,15 +157,15 @@ export default {
         .then(res => {
           if (res.list.length > 6) {
             this.phoneList = res.list.slice(0, 6);
-          }else{
-              this.phoneList = res.list;
-          };
-        //   console.log(this.phoneList);
+          } else {
+            this.phoneList = res.list;
+          }
+          //   console.log(this.phoneList);
         });
     },
-    gotoCart(){
-        // 为什么要使用push
-        this.$router.push('/cart');
+    gotoCart() {
+      // 为什么要使用push
+      this.$router.push("/cart");
     }
   }
 };

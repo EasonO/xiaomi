@@ -114,6 +114,7 @@
             </div>
             <!-- 产品区域结束 -->   
         <service-bar></service-bar>
+        <!-- 为什么要这样写 -->
         <modal title="提示" sureText="查看购物车" btnType="1" modalType="middle" :showModal="showModal" @submit="goToCart" @cancel="showModal=false">
             <template v-slot:body>
                 <p>商品添加成功!</p>

@@ -10,7 +10,7 @@
 export default {
   data(){
     return {
-      res:{}
+
     }
   },
   mounted(){
@@ -23,10 +23,23 @@ export default {
     //   this.res = res;
     // })
     // 本地集成mockjs实现数据mock
-    this.axios.get('/user/login').then((res)=>{
-      this.res = res;
-    })
-
+    // this.axios.get('/user/login').then((res)=>{
+    //   this.res = res;
+    // })
+    this.getUser();
+    this.getCartCount();
+  },
+  methods:{
+    getUser(){
+      this.axios.get('/user').then((res)=>{
+        this.$store.dispatch('saveUserName',res.username);
+      })
+    },
+    getCartCount(){
+      this.axios.get('/carts/products/sum').then((res)=>{
+        this.$store.dispatch('saveCartCount',res);
+      })
+    }
   }
 }
 </script>
@@ -34,5 +47,8 @@ export default {
 <style lang="scss">
 @import './assets/scss/reset.scss';
 @import './assets/scss/config.scss';
-@import './assets/scss/button.scss'
+@import './assets/scss/button.scss';
+#app{
+  position: relative;
+}
 </style>
